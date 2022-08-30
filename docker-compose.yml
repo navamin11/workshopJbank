@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: Dev
+    image: webapp:latest
+    ports:
+      - 8080
+    restart: always
+    depends_on:
+       - postgres
+       - redis
+    networks:
+      - api.network
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx/app.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/certs/dhparam.pem:/etc/ssl/certs/dhparam.pem
+      - ./nginx/certs/certificate.crt:/etc/ssl/certs/certificate.crt
+      - ./nginx/certs/privateKey.key:/etc/ssl/private/privateKey.key
+    restart: always
+    depends_on:
+      - api
+      - postgres
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - api.network
+
+  postgres:
+    image: postgres:alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: jbank
+      PGDATA: /var/lib/postgresql/data
+    ports:
+      - 15432:5432
+    volumes:
+      - /home/dev1/database:/var/lib/postgresql/data
+    networks:
+      - api.network
+
+  redis:
+    image: redis:alpine
+    restart: always
+    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    ports:
+      - 6379
+    volumes:
+      - /home/dev1/cache:/data
+    networks:
+      - api.network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - 5050:80
+    depends_on:
+      - postgres
+    restart: always
+    networks:
+      - api.network
+
+networks:
+  api.network:

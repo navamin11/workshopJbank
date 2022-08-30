@@ -1,0 +1,5 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/dev1/workshop'
+docker image prune -f && docker-compose up --build api
+make: Leaving directory '/home/dev1/workshop'
+ 

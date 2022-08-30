@@ -1,0 +1,1 @@
+{"buildTargets":["docker_down_all","docker_ps","docker_rebuild_all","docker_rebuild_app","docker_stop_app","docker_up_all"],"launchTargets":[],"customConfigurationProvider":{"workspaceBrowse":{"browsePath":[],"compilerArgs":[]},"fileIndex":[]}}
