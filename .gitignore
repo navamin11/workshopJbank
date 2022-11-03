@@ -1,3 +1,4 @@
 nginx
 .env
 api.http
+.vscode
