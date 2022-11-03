@@ -2,4 +2,3 @@ nginx
 .env
 api.http
 .vscode
-test
